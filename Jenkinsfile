@@ -7,45 +7,36 @@ pipeline {
     }
 
     stages {
-        stage('Validate') {
-            steps {
-                script {
-                    echo "Validating deployment to ${params.ENVIRONMENT}"
-
-                    if (params.ENVIRONMENT == 'prod') {
-                        echo "Production deployment selected, extra care required"
-                    }
-                }
-            }
-        }
-
         stage('Build') {
             steps {
-                echo 'Building artifact...'
-                sh 'mkdir -p build && echo "artifact-version-1" > build/app.txt'
-            }
-        }
-
-        stage('Test') {
-            when {
-                expression { return params.RUN_TESTS }
-            }
-            steps {
-                echo 'Running tests...'
-                sh 'test -f build/app.txt'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
                 script {
-                    retry(2) {
-                        timeout(time: 1, unit: 'MINUTES') {
-                            echo "Deploying to ${params.ENVIRONMENT}"
-                            sh 'cat build/app.txt'
-                        }
-                    }
+                    echo 'Building Artifact'
+                    sh 'sleep 3'
+                    echo 'Build complete!'
                 }
+            }
+        }
+
+        stage('Deploy to DEV') {
+            steps {
+                echo 'Deploying to DEV environment'
+                sh 'sleep 3'
+                echo 'DEV deployment complete!'
+            }
+        }
+
+        stage('Promote to PROD') {
+            input {
+                message "Promote to PROD?"
+                ok "Yes, absolutely!"
+            }
+        }
+
+        stage('Deploy to PROD') {
+            steps {
+                echo 'Deploying to PROD environment'
+                sh 'sleep 3'
+                echo 'PROD deployment complete!'
             }
         }
     }
