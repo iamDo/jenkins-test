@@ -30,6 +30,9 @@ pipeline {
                 message "Promote to PROD?"
                 ok "Yes, absolutely!"
             }
+            steps {
+                echo 'Right on, mate!'
+            }
         }
 
         stage('Deploy to PROD') {
