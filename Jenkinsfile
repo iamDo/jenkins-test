@@ -47,24 +47,24 @@ pipeline {
                         values 'Ubuntu', 'macOS', 'Windows'
                     }
                 }
-            }
-            stages {
-                stage('Deploy to DEV') {
-                    steps {
-                        deployToEnv(OS: OS, ENVIRONMENT: 'DEV')
-                    }
-                }
-                stage('Approve') {
-                    steps {
-                        script {
-                            input message: "Approve deployment to ${OS} PROD environment?", ok: "Yes, absolutely!"
+                stages {
+                    stage('Deploy to DEV') {
+                        steps {
+                            deployToEnv(OS: OS, ENVIRONMENT: 'DEV')
                         }
-                        echo "Approved for ${OS} PROD environment"
                     }
-                }
-                stage('Deploy') {
-                    steps {
-                        deployToEnv(OS: OS, ENVIRONMENT: 'PROD')
+                    stage('Approve') {
+                        steps {
+                            script {
+                                input message: "Approve deployment to ${OS} PROD environment?", ok: "Yes, absolutely!"
+                            }
+                            echo "Approved for ${OS} PROD environment"
+                        }
+                    }
+                    stage('Deployto PROD') {
+                        steps {
+                            deployToEnv(OS: OS, ENVIRONMENT: 'PROD')
+                        }
                     }
                 }
             }
