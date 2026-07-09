@@ -3,7 +3,7 @@ def deployToEnv(Map config) {
     unstash "secret"
     echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment"
     sh "cat artifact-${config.OS}.txt"
-    echo "Secret:"
+    sh "cat secret.txt"
     echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment complete!"
 }
 
