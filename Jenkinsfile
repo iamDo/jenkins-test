@@ -39,45 +39,32 @@ pipeline {
             }
         }
 
-        stage('Deploy to DEV') {
+        stage('Deploy') {
             matrix {
                 axes {
                     axis {
                         name 'OS'
                         values 'Ubuntu', 'macOS', 'Windows'
-                    }
-                }
-                stages {
-                    stage('Deploy') {
-                        steps {
-                            deployToEnv(OS: OS, ENVIRONMENT: 'DEV')
-                        }
                     }
                 }
             }
-        }
-
-        stage('Deploy to PROD') {
-            matrix {
-                axes {
-                    axis {
-                        name 'OS'
-                        values 'Ubuntu', 'macOS', 'Windows'
+            stages {
+                stage('Deploy to DEV') {
+                    steps {
+                        deployToEnv(OS: OS, ENVIRONMENT: 'DEV')
                     }
                 }
-                stages {
-                    stage('Approve') {
-                        steps {
-                            script {
-                                input message: "Approve deployment to ${OS} PROD environment?", ok: "Yes, absolutely!"
-                            }
-                            echo "Approved for ${OS} PROD environment"
+                stage('Approve') {
+                    steps {
+                        script {
+                            input message: "Approve deployment to ${OS} PROD environment?", ok: "Yes, absolutely!"
                         }
+                        echo "Approved for ${OS} PROD environment"
                     }
-                    stage('Deploy') {
-                        steps {
-                            deployToEnv(OS: OS, ENVIRONMENT: 'PROD')
-                        }
+                }
+                stage('Deploy') {
+                    steps {
+                        deployToEnv(OS: OS, ENVIRONMENT: 'PROD')
                     }
                 }
             }
