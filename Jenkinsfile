@@ -19,7 +19,7 @@ pipeline {
                     stage('Build') {
                         steps {
                             sh "echo 'Artifact for ${OS}' > artifact-${OS}.txt"
-                            stash name: "artifact-${OS}", includes: artifact-${OS}.txt
+                            stash name: "artifact-${OS}", includes: "artifact-${OS}.txtu
                         }
                     }
                 }
@@ -56,11 +56,10 @@ pipeline {
                 }
                 stages {
                     stage('Approve') {
-                        input {
-                            message "Approve deployment to ${OS} PROD environment?"
-                            ok "Yes, absolutely!"
-                        }
                         steps {
+                            script {
+                                input message: "Approve deployment to ${OS} PROD environment?", ok: "Yes, absolutely!"
+                            }
                             echo "Approved for ${OS} PROD environment"
                         }
                     }
