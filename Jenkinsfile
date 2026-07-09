@@ -37,8 +37,9 @@ pipeline {
                 stages {
                     stage('Deploy') {
                         steps {
+                            unstash "artifact-${OS}"
                             echo "Deploying to ${OS} DEV environment"
-                            sh 'sleep 3'
+                            sh "cat artifact-${OS}.txt"
                             echo "Deploying to ${OS} DEV environment complete!"
                         }
                     }
@@ -65,8 +66,9 @@ pipeline {
                     }
                     stage('Deploy') {
                         steps {
+                            unstash "artifact-${OS}"
                             echo "Deploying to ${OS} PROD environment"
-                            sh 'sleep 3'
+                            sh "cat artifact-${OS}.txt"
                             echo "Deploying to ${OS} PROD environment complete!"
                         }
                     }
