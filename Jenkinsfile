@@ -19,7 +19,7 @@ pipeline {
                     stage('Build') {
                         steps {
                             sh "echo 'Artifact for ${OS}' > artifact-${OS}.txt"
-                            stash name: "artifact-${OS}", includes: "artifact-${OS}.txtu
+                            stash name: "artifact-${OS}", includes: "artifact-${OS}.txt"
                         }
                     }
                 }
