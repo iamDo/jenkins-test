@@ -1,3 +1,10 @@
+def deployToEnv(Map config) {
+    unstash "artifact-${config.OS}"
+    echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment"
+    sh "cat artifact-${config.OS}.txt"
+    echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment complete!"
+}
+
 pipeline {
     agent any
 
@@ -37,10 +44,7 @@ pipeline {
                 stages {
                     stage('Deploy') {
                         steps {
-                            unstash "artifact-${OS}"
-                            echo "Deploying to ${OS} DEV environment"
-                            sh "cat artifact-${OS}.txt"
-                            echo "Deploying to ${OS} DEV environment complete!"
+                            deployToEnv(OS: OS, ENVIRONMENT: 'DEV')
                         }
                     }
                 }
@@ -66,10 +70,7 @@ pipeline {
                     }
                     stage('Deploy') {
                         steps {
-                            unstash "artifact-${OS}"
-                            echo "Deploying to ${OS} PROD environment"
-                            sh "cat artifact-${OS}.txt"
-                            echo "Deploying to ${OS} PROD environment complete!"
+                            deployToEnv(OS: OS, ENVIRONMENT: 'PROD')
                         }
                     }
                 }
