@@ -1,7 +1,9 @@
 def deployToEnv(Map config) {
     unstash "artifact-${config.OS}"
+    unstash "secret-${config.OS}"
     echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment"
     sh "cat artifact-${config.OS}.txt"
+    echo "Secret: ${SECRET}"
     echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment complete!"
 }
 
@@ -26,7 +28,11 @@ pipeline {
                     stage('Build') {
                         steps {
                             sh "echo 'Artifact for ${OS}' > artifact-${OS}.txt"
+                            withCredentials([string(credentialsId: 'secret', variable: 'SECRET')]) {
+                                sh "echo ${SECRET} > secret.txt"
+                            }
                             stash name: "artifact-${OS}", includes: "artifact-${OS}.txt"
+                            stash name: "secret-${OS}", includes: "secret.txt"
                         }
                     }
                 }
