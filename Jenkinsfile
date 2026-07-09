@@ -8,38 +8,70 @@ pipeline {
 
     stages {
         stage('Build') {
-            steps {
-                script {
-                    echo 'Building Artifact'
-                    sh 'sleep 3'
-                    echo 'Build complete!'
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'Ubuntu', 'macOS', 'Windows'
+                    }
+                }
+                stages {
+                    stage('Build') {
+                        steps {
+                            sh "echo 'Artifact for ${OS}' > artifact-${OS}.txt"
+                            stash name: "artifact-${OS}", includes: artifact-${OS}.txt
+                        }
+                    }
                 }
             }
         }
 
         stage('Deploy to DEV') {
-            steps {
-                echo 'Deploying to DEV environment'
-                sh 'sleep 3'
-                echo 'DEV deployment complete!'
-            }
-        }
-
-        stage('Promote to PROD') {
-            input {
-                message "Promote to PROD?"
-                ok "Yes, absolutely!"
-            }
-            steps {
-                echo 'Right on, mate!'
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'Ubuntu', 'macOS', 'Windows'
+                    }
+                }
+                stages {
+                    stage('Deploy') {
+                        steps {
+                            echo "Deploying to ${OS} DEV environment"
+                            sh 'sleep 3'
+                            echo "Deploying to ${OS} DEV environment complete!"
+                        }
+                    }
+                }
             }
         }
 
         stage('Deploy to PROD') {
-            steps {
-                echo 'Deploying to PROD environment'
-                sh 'sleep 3'
-                echo 'PROD deployment complete! test'
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'Ubuntu', 'macOS', 'Windows'
+                    }
+                }
+                stages {
+                    stage('Approve') {
+                        input {
+                            message "Approve deployment to ${OS} PROD environment?"
+                            ok "Yes, absolutely!"
+                        }
+                        steps {
+                            echo "Approved for ${OS} PROD environment"
+                        }
+                    }
+                    stage('Deploy') {
+                        steps {
+                            echo "Deploying to ${OS} PROD environment"
+                            sh 'sleep 3'
+                            echo "Deploying to ${OS} PROD environment complete!"
+                        }
+                    }
+                }
             }
         }
     }
