@@ -1,6 +1,6 @@
 def deployToEnv(Map config) {
     unstash "artifact-${config.OS}"
-    unstash "secret.txt"
+    unstash "secret"
     echo "Deploying to ${config.OS} ${config.ENVIRONMENT} environment"
     sh "cat artifact-${config.OS}.txt"
     echo "Secret:"
@@ -32,7 +32,7 @@ pipeline {
                                 sh 'echo ${SECRET} > secret.txt'
                             }
                             stash name: "artifact-${OS}", includes: "artifact-${OS}.txt"
-                            stash name: "secret-${OS}", includes: "secret.txt"
+                            stash name: "secret", includes: "secret.txt"
                         }
                     }
                 }
